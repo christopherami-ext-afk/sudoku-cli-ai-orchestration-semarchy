@@ -1,0 +1,33 @@
+{
+  "name": "sudoku-cli",
+  "version": "0.1.0",
+  "description": "CLI tool for validating, solving, and generating Sudoku puzzles",
+  "type": "module",
+  "main": "./dist/cli.js",
+  "bin": {
+    "sudoku": "./dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "cli": "node dist/cli.js",
+    "start": "node dist/cli.js",
+    "test": "echo \"Error: no tests implemented yet\" && exit 1",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "sudoku",
+    "cli",
+    "puzzle",
+    "solver",
+    "generator"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
