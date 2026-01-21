@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+dist-test/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -31,3 +32,6 @@ yarn-error.log*
 
 # Test coverage
 coverage/
+
+# Temporary files
+temp-puzzle.txt
