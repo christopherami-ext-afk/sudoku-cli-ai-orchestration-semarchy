@@ -14,7 +14,7 @@
     "build": "tsc",
     "cli": "node dist/cli.js",
     "start": "node dist/cli.js",
-    "test": "echo \"Error: no tests implemented yet\" && exit 1",
+    "test": "npm run build && tsc --project tsconfig.test.json && node --test dist-test/test/*.test.js",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [

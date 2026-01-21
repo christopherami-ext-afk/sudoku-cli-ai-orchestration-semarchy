@@ -1,3 +1,6 @@
+import { formatGrid } from '../core/parser.js';
+import { generatePuzzle, Difficulty } from '../core/generator.js';
+
 const GENERATE_HELP = `
 sudoku generate - Generate a new Sudoku puzzle
 
@@ -40,12 +43,36 @@ export async function runGenerateCommand(args: string[]): Promise<void> {
     process.exit(1);
   }
 
-  const difficulty = args[difficultyIndex + 1];
-  const seed = args[seedIndex + 1];
-
-  // TODO (SUD-5): Implement puzzle generation with PRNG
+  const difficulty = args[difficultyIndex + 1] as Difficulty;
+  const seedStr = args[seedIndex + 1];
   
-  console.log('generate command: not implemented yet');
-  console.log(`Difficulty: ${difficulty}`);
-  console.log(`Seed: ${seed}`);
+  // Validate difficulty
+  if (!['easy', 'medium', 'hard'].includes(difficulty)) {
+    console.error(`Error: Invalid difficulty '${difficulty}'. Must be 'easy', 'medium', or 'hard'`);
+    process.exit(1);
+  }
+  
+  // Parse seed
+  const seed = parseInt(seedStr, 10);
+  if (isNaN(seed)) {
+    console.error(`Error: Invalid seed '${seedStr}'. Must be a number`);
+    process.exit(1);
+  }
+  
+  try {
+    // Generate the puzzle (SUD-5)
+    const result = generatePuzzle({ difficulty, seed });
+    
+    // Output the puzzle as an 81-char string
+    const puzzleString = formatGrid(result.puzzle);
+    console.log(puzzleString);
+    process.exit(0);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(`Generation error: ${error.message}`);
+    } else {
+      console.error('Generation error: Unknown error');
+    }
+    process.exit(1);
+  }
 }

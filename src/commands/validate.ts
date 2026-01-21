@@ -1,3 +1,6 @@
+import { parseInput, ParseError } from '../core/parser.js';
+import { validateGrid } from '../core/validator.js';
+
 const VALIDATE_HELP = `
 sudoku validate - Validate a Sudoku puzzle
 
@@ -32,9 +35,32 @@ export async function runValidateCommand(args: string[]): Promise<void> {
 
   const input = args[inputIndex + 1];
   
-  // TODO (SUD-2): Parse puzzle input (string or file)
-  // TODO (SUD-3): Validate puzzle and report status
-  
-  console.log('validate command: not implemented yet');
-  console.log(`Input: ${input}`);
+  try {
+    // Parse the input (SUD-2)
+    const grid = await parseInput(input);
+    
+    // Validate the puzzle (SUD-3)
+    const result = validateGrid(grid);
+    
+    if (result.status === 'invalid') {
+      // Report validation errors (use 1-based indexing for user-friendliness)
+      console.error('Invalid puzzle:');
+      for (const issue of result.issues) {
+        console.error(`  - Duplicate ${issue.value} in ${issue.type} ${issue.index + 1}`);
+      }
+      process.exit(1);
+    } else if (result.status === 'valid-complete') {
+      console.log('Valid puzzle (complete)');
+      process.exit(0);
+    } else {
+      console.log('Valid puzzle (incomplete)');
+      process.exit(0);
+    }
+  } catch (error) {
+    if (error instanceof ParseError) {
+      console.error(`Parse error: ${error.message}`);
+      process.exit(1);
+    }
+    throw error;
+  }
 }
