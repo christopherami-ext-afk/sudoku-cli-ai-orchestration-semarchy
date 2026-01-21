@@ -44,7 +44,7 @@ describe('Parser Tests', () => {
         () => parsePuzzleString(input),
         (err: Error) => {
           return err instanceof ParseError &&
-                 err.message.includes('exactly 81 characters');
+                 err.message.includes('expected 81 characters');
         }
       );
     });
@@ -56,7 +56,7 @@ describe('Parser Tests', () => {
         () => parsePuzzleString(input),
         (err: Error) => {
           return err instanceof ParseError &&
-                 err.message.includes('exactly 81 characters');
+                 err.message.includes('expected 81 characters');
         }
       );
     });
@@ -78,7 +78,7 @@ describe('Parser Tests', () => {
         () => parsePuzzleString(''),
         (err: Error) => {
           return err instanceof ParseError &&
-                 err.message.includes('exactly 81 characters');
+                 err.message.includes('expected 81 characters');
         }
       );
     });
@@ -126,10 +126,10 @@ describe('Parser Tests', () => {
 
   describe('ParseError', () => {
     it('should have correct properties', () => {
-      const error = new ParseError('length', 'Test error');
+      const error = new ParseError('Test error', 'length');
       
-      assert.strictEqual(error.code, 'length');
       assert.strictEqual(error.message, 'Test error');
+      assert.strictEqual(error.code, 'length');
       assert.ok(error instanceof Error);
     });
   });
