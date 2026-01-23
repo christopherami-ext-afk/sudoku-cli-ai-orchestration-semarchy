@@ -1,4 +1,4 @@
-import { parseInput, ParseError, formatGrid } from '../core/parser.js';
+import { parseInput, ParseError, formatGridVisual } from '../core/parser.js';
 import { validateGrid } from '../core/validator.js';
 import { solveGrid } from '../core/solver.js';
 
@@ -56,8 +56,8 @@ export async function runSolveCommand(args: string[]): Promise<void> {
     const result = solveGrid(grid);
     
     if (result.solved && result.grid) {
-      // Output the solution as an 81-char string
-      const solution = formatGrid(result.grid);
+      // Output the solution as a visual grid
+      const solution = formatGridVisual(result.grid);
       console.log(solution);
       process.exit(0);
     } else {

@@ -166,3 +166,38 @@ export function formatGrid(grid: Grid, useZero = true): string {
   }
   return result;
 }
+
+/**
+ * Format a grid as a visual 9x9 board with box separators
+ * 
+ * @param grid - 9x9 Grid to format
+ * @returns string - Visual representation of the grid
+ */
+export function formatGridVisual(grid: Grid): string {
+  const lines: string[] = [];
+  const separator = '+-------+-------+-------+';
+  
+  for (let row = 0; row < GRID_SIZE; row++) {
+    // Add separator before rows 0, 3, 6
+    if (row % 3 === 0) {
+      lines.push(separator);
+    }
+    
+    let line = '|';
+    for (let col = 0; col < GRID_SIZE; col++) {
+      const value = grid[row][col];
+      line += ' ' + (value === 0 ? '.' : value.toString());
+      
+      // Add box separator after columns 2, 5, 8
+      if ((col + 1) % 3 === 0) {
+        line += ' |';
+      }
+    }
+    lines.push(line);
+  }
+  
+  // Add final separator
+  lines.push(separator);
+  
+  return lines.join('\n');
+}

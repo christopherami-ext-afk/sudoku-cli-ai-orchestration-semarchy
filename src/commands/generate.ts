@@ -1,4 +1,4 @@
-import { formatGrid } from '../core/parser.js';
+import { formatGridVisual } from '../core/parser.js';
 import { generatePuzzle, Difficulty } from '../core/generator.js';
 
 const GENERATE_HELP = `
@@ -63,8 +63,8 @@ export async function runGenerateCommand(args: string[]): Promise<void> {
     // Generate the puzzle (SUD-5)
     const result = generatePuzzle({ difficulty, seed });
     
-    // Output the puzzle as an 81-char string
-    const puzzleString = formatGrid(result.puzzle);
+    // Output the puzzle as a visual grid
+    const puzzleString = formatGridVisual(result.puzzle);
     console.log(puzzleString);
     process.exit(0);
   } catch (error) {
