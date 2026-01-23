@@ -2,12 +2,11 @@ name: Docs Refresh (Issue)
 
 on:
   workflow_run:
-    workflows: ["CI (Node 20)"]
+    workflows: ["CI"]   # MUST match ci.yml name exactly
     types: [completed]
 
 permissions:
   contents: read
-  actions: read
   issues: write
 
 jobs:
@@ -22,7 +21,6 @@ jobs:
       - name: Create issue (unless docs-only)
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -102,8 +100,8 @@ jobs:
             }
 
             const filesSection = changedFiles.length
-              ? changedFiles.map(f => `- ${f}`).join('\n')
-              : '- (best-effort) Unable to determine changed files for this run.';
+              ? changedFiles.map(f => `- \`${f}\``).join('\n')
+              : '- _(best-effort) Unable to determine changed files for this run._';
 
             const body = [
               `Commit: ${commitUrl}`,
@@ -112,8 +110,8 @@ jobs:
               filesSection,
               '',
               '## Optional prompt for Copilot (Docs agent)',
-              '- Use sudoku-doc-writer.agent.md behavior',
-              '- Follow .github/copilot-instructions.md',
+              '- Use `sudoku-doc-writer.agent.md` behavior',
+              '- Follow `.github/copilot-instructions.md`',
               `- Update README/docs to reflect actual CLI behavior and any changes introduced in commit ${shortSha}`,
               '- Keep code changes minimal; docs-only preferred',
             ].join('\n');

@@ -1,12 +1,16 @@
 name: CI
 
 on:
-  push:
-    branches: ["**"]
   pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +26,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Test
+        run: npm test
 
       - name: Typecheck
         run: npm run typecheck
-
-      - name: Test
-        run: npm test
