@@ -19,6 +19,8 @@ EXAMPLES:
   sudoku generate --difficulty hard --seed 99
 `;
 
+import { generatePuzzle, type Difficulty } from '../core/generator.js';
+
 export async function runGenerateCommand(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
     console.log(GENERATE_HELP);
@@ -43,9 +45,20 @@ export async function runGenerateCommand(args: string[]): Promise<void> {
   const difficulty = args[difficultyIndex + 1];
   const seed = args[seedIndex + 1];
 
-  // TODO (SUD-5): Implement puzzle generation with PRNG
-  
-  console.log('generate command: not implemented yet');
-  console.log(`Difficulty: ${difficulty}`);
-  console.log(`Seed: ${seed}`);
+  const allowed = new Set(['easy', 'medium', 'hard']);
+  if (!allowed.has(difficulty)) {
+    console.error(`Error: invalid difficulty '${difficulty}'. Must be one of: easy, medium, hard`);
+    process.exit(1);
+  }
+
+  const seedNumber = Number.parseInt(seed, 10);
+  if (!Number.isFinite(seedNumber) || !Number.isInteger(seedNumber)) {
+    console.error(`Error: --seed must be an integer, got '${seed}'`);
+    process.exit(1);
+  }
+
+  const result = generatePuzzle({ difficulty: difficulty as Difficulty, seed: seedNumber });
+
+  const puzzleString = result.puzzle.flat().map((v) => (v === 0 ? '0' : String(v))).join('');
+  console.log(puzzleString);
 }

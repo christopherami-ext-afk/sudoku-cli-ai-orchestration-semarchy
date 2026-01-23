@@ -1,3 +1,7 @@
+import { parseInput, ParseError } from '../core/parser.js';
+import { validateGrid } from '../core/validator.js';
+import { solveGrid } from '../core/solver.js';
+
 const SOLVE_HELP = `
 sudoku solve - Solve a Sudoku puzzle
 
@@ -32,10 +36,45 @@ export async function runSolveCommand(args: string[]): Promise<void> {
 
   const input = args[inputIndex + 1];
   
-  // TODO (SUD-2): Parse puzzle input (string or file)
-  // TODO (SUD-3): Validate puzzle
-  // TODO (SUD-4): Solve puzzle and output solution
-  
-  console.log('solve command: not implemented yet');
-  console.log(`Input: ${input}`);
+  try {
+    const grid = await parseInput(input);
+
+    const validation = validateGrid(grid);
+    if (validation.status === 'invalid') {
+      const issue = validation.issues[0];
+      const unitName = issue.type === 'row'
+        ? `row ${issue.index}`
+        : issue.type === 'column'
+          ? `column ${issue.index}`
+          : `box ${issue.index}`;
+
+      console.error(`Invalid puzzle: duplicate ${issue.value} in ${unitName}`);
+      process.exit(1);
+    }
+
+    const result = solveGrid(grid);
+    if (!result.solved || !result.grid) {
+      if (result.reason === 'invalid') {
+        console.error('Invalid puzzle');
+      } else {
+        console.error('Puzzle is unsolvable');
+      }
+      process.exit(1);
+    }
+
+    const solution = result.grid.flat().join('');
+    if (solution.length !== 81 || solution.includes('0')) {
+      console.error('Puzzle is unsolvable');
+      process.exit(1);
+    }
+
+    console.log(solution);
+    process.exit(0);
+  } catch (error) {
+    if (error instanceof ParseError) {
+      console.error(`Parse error: ${error.message}`);
+      process.exit(1);
+    }
+    throw error;
+  }
 }

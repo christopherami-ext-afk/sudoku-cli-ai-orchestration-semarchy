@@ -1,3 +1,6 @@
+import { parseInput, ParseError } from '../core/parser.js';
+import { validateGrid } from '../core/validator.js';
+
 const VALIDATE_HELP = `
 sudoku validate - Validate a Sudoku puzzle
 
@@ -32,9 +35,42 @@ export async function runValidateCommand(args: string[]): Promise<void> {
 
   const input = args[inputIndex + 1];
   
-  // TODO (SUD-2): Parse puzzle input (string or file)
-  // TODO (SUD-3): Validate puzzle and report status
-  
-  console.log('validate command: not implemented yet');
-  console.log(`Input: ${input}`);
+  try {
+    // Parse puzzle input (string or file)
+    const grid = await parseInput(input);
+    
+    // Validate the grid
+    const result = validateGrid(grid);
+    
+    if (result.status === 'valid-complete') {
+      console.log('Valid puzzle (complete)');
+      process.exit(0);
+    } else if (result.status === 'valid-incomplete') {
+      console.log('Valid puzzle (incomplete)');
+      process.exit(0);
+    } else {
+      // Invalid - report first issue clearly
+      const firstIssue = result.issues[0];
+      const unitName = firstIssue.type === 'row' 
+        ? `row ${firstIssue.index}` 
+        : firstIssue.type === 'column'
+        ? `column ${firstIssue.index}`
+        : `box ${firstIssue.index}`;
+      
+      console.error(`Invalid puzzle: duplicate ${firstIssue.value} in ${unitName}`);
+      
+      // Show additional issues if any
+      if (result.issues.length > 1) {
+        console.error(`(${result.issues.length - 1} more issue${result.issues.length > 2 ? 's' : ''} found)`);
+      }
+      
+      process.exit(1);
+    }
+  } catch (error) {
+    if (error instanceof ParseError) {
+      console.error(`Parse error: ${error.message}`);
+      process.exit(1);
+    }
+    throw error;
+  }
 }

@@ -11,11 +11,11 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "cli": "node dist/cli.js",
     "start": "node dist/cli.js",
-    "test": "echo \"Error: no tests implemented yet\" && exit 1",
-    "typecheck": "tsc --noEmit"
+    "test": "npm run build && tsc -p tsconfig.test.json && node dist-test/test/parser.test.js && node dist-test/test/validator.test.js && node dist-test/test/solver.test.js && node dist-test/test/generator.test.js && node dist-test/test/cli.smoke.test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "keywords": [
     "sudoku",
